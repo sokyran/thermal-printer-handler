@@ -6,8 +6,7 @@ const device = new escpos.USB();
 // const device  = new escpos.Network('localhost');
 // const device  = new escpos.Serial('/dev/usb/lp0');
 
-const options = { encoding: "utf-8" }
-// encoding is optional
+const options = { encoding: "UTF8" }
 
 const printer = new escpos.Printer(device, options);
 
@@ -23,7 +22,7 @@ const multilineText = `
 device.open(function (error) {
   printer
     .font('a')
-    .align('ct')
+    .align('LT')
     .style('bu')
     .size(1, 1)
 
