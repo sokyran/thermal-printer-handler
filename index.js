@@ -6,7 +6,7 @@ const device = new escpos.USB();
 // const device  = new escpos.Network('localhost');
 // const device  = new escpos.Serial('/dev/usb/lp0');
 
-const options = { encoding: "GB18030" }
+const options = { encoding: "utf8" }
 // encoding is optional
 
 const printer = new escpos.Printer(device, options);
@@ -28,8 +28,4 @@ device.open(function (error) {
         { text: "Right", align: "RIGHT", width: 0.33 }
       ],
     )
-    .qrimage('https://github.com/song940/node-escpos', function (err) {
-      this.cut();
-      this.close();
-    });
 });
