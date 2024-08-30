@@ -28,4 +28,5 @@ device.open(function (error) {
         { text: "Right", align: "RIGHT", width: 0.33 }
       ],
     )
+    .cut().close();
 });
