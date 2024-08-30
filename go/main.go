@@ -2,33 +2,55 @@ package main
 
 import (
 	"bufio"
-	"fmt"
 	"os"
 
-	"github.com/hennedo/escpos"
+	"github.com/kenshaw/escpos"
 )
 
 func main() {
-	// Open the USB device file
-	deviceFile := "/dev/bus/usb/001/002"
-	file, err := os.OpenFile(deviceFile, os.O_RDWR, 0666)
+	f, err := os.OpenFile("/dev/usb/lp3", os.O_RDWR, 0)
 	if err != nil {
-		fmt.Printf("Error opening USB device: %v\n", err)
-		return
+		panic(err)
 	}
-	defer file.Close()
+	defer f.Close()
 
-	w := bufio.NewWriter(file)
+	w := bufio.NewWriter(f)
+	p := escpos.New(w)
 
-	// Create a new escpos printer using the USB device
-	p := escpos.New(w) // `file` is an `io.Writer`
+	p.Init()
+	p.SetSmooth(1)
+	p.SetFontSize(2, 3)
+	p.SetFont("A")
+	p.Write("test ")
+	p.SetFont("B")
+	p.Write("test2 ")
+	p.SetFont("C")
+	p.Write("test3 ")
+	p.Formfeed()
 
-	p.Bold(true).Size(2, 2).Write("Hello World")
-	p.LineFeed()
-	p.Bold(false).Underline(2).Justify(escpos.JustifyCenter).Write("this is underlined")
-	p.LineFeed()
-	p.QRCode("https://github.com/hennedo/escpos", true, 10, escpos.QRCodeErrorCorrectionLevelH)
+	p.SetFont("B")
+	p.SetFontSize(1, 1)
 
-	// You need to use either p.Print() or p.PrintAndCut() at the end to send the data to the printer.
-	p.PrintAndCut()
+	p.SetEmphasize(1)
+	p.Write("halle")
+	p.Formfeed()
+
+	p.SetUnderline(1)
+	p.SetFontSize(4, 4)
+	p.Write("halle")
+
+	p.SetReverse(1)
+	p.SetFontSize(2, 4)
+	p.Write("halle")
+	p.Formfeed()
+
+	p.SetFont("C")
+	p.SetFontSize(8, 8)
+	p.Write("halle")
+	p.FormfeedN(5)
+
+	p.Cut()
+	p.End()
+
+	w.Flush()
 }
