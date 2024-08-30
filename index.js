@@ -21,6 +21,7 @@ const multilineText = `
 
 device.open(function (error) {
   printer
+    .encode('windows-1251')
     .font('a')
     .align('LT')
     .style('bu')
