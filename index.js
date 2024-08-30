@@ -19,17 +19,19 @@ const multilineText = `
 `;
 
 
-device.open(function (error) {
-  printer
-    .encode('cp866')
-    .font('a')
-    .align('LT')
-    .style('bu')
-    .size(1, 1)
+device.open(function (error) { printer.align('ct').encode('ibm857').text('The quick brown fox jumps over the lazy dog').text('Ç Ğ I İ Ö Ş Ü ü ş ö i ı ğ ç Â â î Î Û û').qrimage('https://github.com/song940/node-escpos', function (err) { this.cut(); this.close(); }); });
 
-  multilineText.split('\n').forEach((line) => {
-    printer.encode('cp866').text(line);
-  });
+// device.open(function (error) {
+//   printer
+//     .encode('cp866')
+//     .font('a')
+//     .align('LT')
+//     .style('bu')
+//     .size(1, 1)
 
-  printer.cut().close();
-});
+//   multilineText.split('\n').forEach((line) => {
+//     printer.text(line);
+//   });
+
+//   printer.cut().close();
+// });
