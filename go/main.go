@@ -9,7 +9,7 @@ import (
 
 func main() {
 	// Open the USB device file
-	deviceFile := "/dev/usb/lp0" // Replace with the correct device path
+	deviceFile := "/dev/bus/usb/001/002"
 	file, err := os.OpenFile(deviceFile, os.O_RDWR, 0666)
 	if err != nil {
 		fmt.Printf("Error opening USB device: %v\n", err)

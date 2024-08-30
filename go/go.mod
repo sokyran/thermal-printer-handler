@@ -1,6 +1,6 @@
 module thermal-printer-handler
 
-go 1.22.1
+go 1.22
 
 require github.com/hennedo/escpos v0.0.1
 
