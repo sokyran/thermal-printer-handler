@@ -21,14 +21,14 @@ const multilineText = `
 
 device.open(function (error) {
   printer
-    .encode('windows-1251')
+    .encode('cp866')
     .font('a')
     .align('LT')
     .style('bu')
     .size(1, 1)
 
   multilineText.split('\n').forEach((line) => {
-    printer.text(line);
+    printer.encode('cp866').text(line);
   });
 
   printer.cut().close();
