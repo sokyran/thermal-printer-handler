@@ -3,8 +3,6 @@ package main
 import (
 	"fmt"
 	"os"
-
-	"github.com/seer-robotics/escpos"
 )
 
 func main() {
@@ -17,37 +15,39 @@ func main() {
 	}
 	defer file.Close()
 
-	p := escpos.New(file)
+	file.Write([]byte{0x1b, 0x40})
 
-	p.Verbose = true
+	// p := escpos.New(file)
 
-	p.Init()
-	p.SetFontSize(2, 3)
-	p.SetFont("A")
-	p.Write("test1")
-	p.SetFont("B")
-	p.Write("test2")
+	// // p.Verbose = true
 
-	p.SetEmphasize(1)
-	p.Write("hello")
-	p.Formfeed()
+	// p.Init()
+	// p.SetFontSize(2, 3)
+	// p.SetFont("A")
+	// p.Write("test1")
+	// p.SetFont("B")
+	// p.Write("test2")
 
-	p.SetUnderline(1)
-	p.SetFontSize(4, 4)
-	p.Write("hello")
+	// p.SetEmphasize(1)
+	// p.Write("hello")
+	// p.Formfeed()
 
-	p.SetReverse(1)
-	p.SetFontSize(2, 4)
-	p.Write("hello")
-	p.FormfeedN(10)
+	// p.SetUnderline(1)
+	// p.SetFontSize(4, 4)
+	// p.Write("hello")
 
-	p.SetAlign("center")
-	p.Write("test")
-	p.Linefeed()
-	p.Write("test")
-	p.Linefeed()
-	p.Write("test")
-	p.FormfeedD(200)
+	// p.SetReverse(1)
+	// p.SetFontSize(2, 4)
+	// p.Write("hello")
+	// p.FormfeedN(10)
 
-	p.Cut()
+	// p.SetAlign("center")
+	// p.Write("test")
+	// p.Linefeed()
+	// p.Write("test")
+	// p.Linefeed()
+	// p.Write("test")
+	// p.FormfeedD(200)
+
+	// p.Cut()
 }
