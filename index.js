@@ -11,13 +11,13 @@ const options = { encoding: "utf-8" }
 
 const printer = new escpos.Printer(device, options);
 
-const multilineText = ```
-— А ви заблокували Юру? Він оце без вас поїхав
+const multilineText = `
+— А ви заблокували Юру ? Він оце без вас поїхав
 — Тоді ще Миру треба…
 — Давайте!
 
 Влад прийшов на коворкинг до Насти та Єви
-```;
+`;
 
 
 device.open(function (error) {
