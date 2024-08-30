@@ -6,7 +6,7 @@ const device = new escpos.USB();
 // const device  = new escpos.Network('localhost');
 // const device  = new escpos.Serial('/dev/usb/lp0');
 
-const options = { encoding: "utf-8" }
+const options = { encoding: "GB18030" }
 // encoding is optional
 
 const printer = new escpos.Printer(device, options);
