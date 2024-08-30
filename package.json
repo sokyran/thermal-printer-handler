@@ -10,7 +10,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "escpos": "^3.0.0-alpha.6",
+    "escpos": "^2.5.2",
     "escpos-usb": "^3.0.0-alpha.4"
   }
 }
