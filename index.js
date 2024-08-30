@@ -6,7 +6,7 @@ const device = new escpos.USB();
 // const device  = new escpos.Network('localhost');
 // const device  = new escpos.Serial('/dev/usb/lp0');
 
-const options = { encoding: "1251" }
+const options = { encoding: "cp1251" }
 
 const printer = new escpos.Printer(device, options);
 
