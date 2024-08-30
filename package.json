@@ -11,6 +11,7 @@
   "description": "",
   "dependencies": {
     "escpos": "^2.5.2",
-    "escpos-usb": "^3.0.0-alpha.4"
+    "escpos-usb": "^3.0.0-alpha.4",
+    "usb": "^1.8.0"
   }
 }
