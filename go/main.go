@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"os"
 
@@ -17,8 +18,10 @@ func main() {
 	}
 	defer file.Close()
 
+	w := bufio.NewWriter(file)
+
 	// Create a new escpos printer using the USB device
-	p := escpos.New(file) // `file` is an `io.Writer`
+	p := escpos.New(w) // `file` is an `io.Writer`
 
 	p.Bold(true).Size(2, 2).Write("Hello World")
 	p.LineFeed()
