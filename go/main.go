@@ -13,7 +13,7 @@ import (
 )
 
 func WriteToPrinter(e *escpos.Escpos, data string) (int, error) {
-	cd, err := iconv.Open("cp866", "utf-8")
+	cd, err := iconv.Open("CP1251", "utf-8")
 	if err != nil {
 		log.Fatal(err)
 	}
