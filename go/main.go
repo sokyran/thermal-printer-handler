@@ -62,7 +62,8 @@ func main() {
 	p.SetFont("A")
 	p.Write("test1")
 	p.SetFont("B")
-	p.Write("Привіт")
+
+	p.WriteWEU("Привіт")
 
 	p.SetEmphasize(1)
 	p.Write("hello")
