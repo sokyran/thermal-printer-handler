@@ -54,11 +54,12 @@ func main() {
 
 	p := escpos.New(epOut)
 
-	p.Bold(true).Size(2, 2).Write("Hello World")
+	p.Bold(true).Size(1, 1).Write("Hello World")
 	p.LineFeed()
 	p.Bold(false).Underline(2).Justify(escpos.JustifyCenter).Write("this is underlined")
 	p.LineFeed()
-	p.QRCode("https://github.com/hennedo/escpos", true, 10, escpos.QRCodeErrorCorrectionLevelH)
+
+	p.LineFeed()
 
 	// You need to use either p.Print() or p.PrintAndCut() at the end to send the data to the printer.
 	p.Print()
