@@ -1,5 +1,5 @@
 import EscPosEncoder from 'esc-pos-encoder';
-import { getDeviceList, findByIds } from 'usb';
+import { findByIds } from 'usb';
 
 const encodings = [
   "cp437", "cp720", "cp737", "cp775", "cp850", "cp851", "cp852", "cp853", "cp855", "cp857",
@@ -56,16 +56,37 @@ if (!endpoint || !endpoint.direction === 'out') {
 const encoder = new EscPosEncoder({
   width: 34,
 });
-const result = encoder
-  .initialize()
-  .text('Hello World\n')
-  .text('Hello World\n')
-  .newline()
-  .text('Hello World\n')
-  .encode();
+
+const text = 'інтернаціоналізація';
+for (const encoding of encodings) {
+  try {
+    const result = encoder
+      .codepage(encoding)
+      .text(text)
+      .encode();
+
+    console.log(result);
+  } catch {
+    console.log('Error encoding:', encoding);
+  }
+}
+
+const result = encoder.initialize()
+
+for (const encoding of encodings) {
+  try {
+    result
+      .codepage(encoding)
+      .text(text)
+  } catch {
+    console.log('Error encoding:', encoding);
+  }
+}
+
+const final = result.encode();
 
 // Step 4: Send the Data to the Printer
-endpoint.transfer(result, (error) => {
+endpoint.transfer(final, (error) => {
   if (error) {
     console.error('Failed to print:', error);
   } else {
