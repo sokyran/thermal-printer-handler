@@ -8,8 +8,19 @@ import (
 	"os/exec"
 
 	"github.com/google/gousb"
+	"github.com/qiniu/iconv"
 	"github.com/seer-robotics/escpos"
 )
+
+func WriteToPrinter(e *escpos.Escpos, data string) (int, error) {
+	cd, err := iconv.Open("utf-8", "utf-8")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer cd.Close()
+	weu := cd.ConvString(data)
+	return e.WriteRaw([]byte(weu))
+}
 
 func main() {
 	// Create a new USB context
@@ -59,10 +70,13 @@ func main() {
 	p.Init()
 
 	p.SetFontSize(1, 1)
+	p.SetAlign("center")
 	p.SetFont("A")
 	p.Write("test1")
 	p.Linefeed()
-	p.WriteWEU("Привіт")
+
+	WriteToPrinter(p, "test2")
+	WriteToPrinter(p, "ПРИВІТ")
 
 	p.Linefeed()
 	p.Linefeed()
