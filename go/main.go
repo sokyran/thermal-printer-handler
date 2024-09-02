@@ -2,10 +2,25 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
+
+	"github.com/hennedo/escpos"
+	"go.bug.st/serial"
 )
 
 func main() {
+	ports, err := serial.GetPortsList()
+	if err != nil {
+		log.Fatal(err)
+	}
+	if len(ports) == 0 {
+		log.Fatal("No serial ports found!")
+	}
+	for _, port := range ports {
+		fmt.Printf("Found port: %v\n", port)
+	}
+
 	// Open the USB device file
 	deviceFile := "/dev/bus/usb/001/002" // Replace with the correct device path
 	file, err := os.OpenFile(deviceFile, os.O_RDWR, 0666)
@@ -15,39 +30,15 @@ func main() {
 	}
 	defer file.Close()
 
-	file.Write([]byte{0x1b, 0x40})
+	// Create a new printer
+	p := escpos.New(file)
 
-	// p := escpos.New(file)
+	p.Bold(true).Size(2, 2).Write("Hello World")
+	p.LineFeed()
+	p.Bold(false).Underline(2).Justify(escpos.JustifyCenter).Write("this is underlined")
+	p.LineFeed()
+	p.QRCode("https://github.com/hennedo/escpos", true, 10, escpos.QRCodeErrorCorrectionLevelH)
 
-	// // p.Verbose = true
-
-	// p.Init()
-	// p.SetFontSize(2, 3)
-	// p.SetFont("A")
-	// p.Write("test1")
-	// p.SetFont("B")
-	// p.Write("test2")
-
-	// p.SetEmphasize(1)
-	// p.Write("hello")
-	// p.Formfeed()
-
-	// p.SetUnderline(1)
-	// p.SetFontSize(4, 4)
-	// p.Write("hello")
-
-	// p.SetReverse(1)
-	// p.SetFontSize(2, 4)
-	// p.Write("hello")
-	// p.FormfeedN(10)
-
-	// p.SetAlign("center")
-	// p.Write("test")
-	// p.Linefeed()
-	// p.Write("test")
-	// p.Linefeed()
-	// p.Write("test")
-	// p.FormfeedD(200)
-
-	// p.Cut()
+	// You need to use either p.Print() or p.PrintAndCut() at the end to send the data to the printer.
+	p.Print()
 }
