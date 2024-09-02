@@ -59,11 +59,11 @@ const encoder = new EscPosEncoder({
 
 const text = 'інтернаціоналізація';
 
-const result = encoder.initialize()
+let result = encoder.initialize()
 
 for (const encoding of encodings) {
   try {
-    result
+    result = result
       .codepage(encoding)
       .text(text)
 
