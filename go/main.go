@@ -1,37 +1,41 @@
 package main
 
 import (
-	"fmt"
-	"os"
+	"log"
 
+	"github.com/google/gousb"
 	"github.com/hennedo/escpos"
-	"go.bug.st/serial"
 )
 
 func main() {
-	mode := &serial.Mode{
-		BaudRate: 115200,
-	}
-	port, err := serial.Open("/dev/bus/usb/001/002", mode)
+	ctx := gousb.NewContext()
+
+	defer ctx.Close()
+
+	dev, err := ctx.OpenDeviceWithVIDPID(0x046d, 0xc526)
 
 	if err != nil {
-		fmt.Print("Error opening serial port: ", err)
-		return
+		log.Fatalf("Could not open a device: %v", err)
 	}
+	defer dev.Close()
 
-	fmt.Print(port, err)
-
-	// Open the USB device file
-	deviceFile := "/dev/bus/usb/001/002" // Replace with the correct device path
-	file, err := os.OpenFile(deviceFile, os.O_RDWR, 0666)
+	// Claim the default interface using a convenience function.
+	// The default interface is always #0 alt #0 in the currently active
+	// config.
+	intf, done, err := dev.DefaultInterface()
 	if err != nil {
-		fmt.Printf("Error opening USB device: %v\n", err)
-		return
+		log.Fatalf("%s.DefaultInterface(): %v", dev, err)
 	}
-	defer file.Close()
+	defer done()
+
+	// Open an OUT endpoint.
+	ep, err := intf.OutEndpoint(7)
+	if err != nil {
+		log.Fatalf("%s.OutEndpoint(7): %v", intf, err)
+	}
 
 	// Create a new printer
-	p := escpos.New(file)
+	p := escpos.New(ep)
 
 	p.Bold(true).Size(2, 2).Write("Hello World")
 	p.LineFeed()

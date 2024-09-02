@@ -14,6 +14,7 @@ require (
 
 require (
 	github.com/astaxie/beego v1.12.3 // indirect
+	github.com/google/gousb v1.1.3
 	github.com/qiniu/iconv v1.2.0 // indirect
 	github.com/shiena/ansicolor v0.0.0-20151119151921-a422bbe96644 // indirect
 	go.bug.st/serial v1.6.2
