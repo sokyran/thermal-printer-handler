@@ -13,7 +13,7 @@ import (
 )
 
 func WriteToPrinter(e *escpos.Escpos, data string) (int, error) {
-	cd, err := iconv.Open("utf-8", "utf-8")
+	cd, err := iconv.Open("cp866", "utf-8")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -76,7 +76,14 @@ func main() {
 	p.Linefeed()
 
 	WriteToPrinter(p, "test2")
+
+	p.Linefeed()
+	p.FormfeedN(10)
+
 	WriteToPrinter(p, "ПРИВІТ")
+
+	p.Linefeed()
+	p.FormfeedN(200)
 
 	p.Linefeed()
 	p.Linefeed()
