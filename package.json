@@ -2,6 +2,7 @@
   "name": "printer-handler",
   "version": "1.0.0",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -13,6 +14,6 @@
     "esc-pos-encoder": "^2.1.0",
     "escpos": "^2.5.2",
     "escpos-usb": "^3.0.0-alpha.4",
-    "usb": "^1.8.0"
+    "usb": "^2.13.0"
   }
 }

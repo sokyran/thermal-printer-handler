@@ -1,4 +1,11 @@
-let EscPosEncoder = require('esc-pos-encoder');
+import EscPosEncoder from 'esc-pos-encoder';
+import { getDeviceList, findByIds } from 'usb';
+
+const devices = getDeviceList();
+
+for (const device of devices) {
+  console.log(device);
+}
 
 let encoder = new EscPosEncoder({
   width: 34,
@@ -14,15 +21,17 @@ const encodings = [
   "windows1258"
 ];
 
-encodings.forEach((encoding) => {
-  try {
-    let result = encoder
-      .codepage(encoding)
-      .text('інтернаціоналізація')
-      .encode()
+// encodings.forEach((encoding) => {
+//   try {
+//     let result = encoder
+//       .codepage(encoding)
+//       .text('інтернаціоналізація')
+//       .encode()
 
-    console.log(result);
-  } catch {
-    // console.log('Error encoding:', encoding);
-  }
-});
+//     console.log(result);
+//   } catch {
+//     // console.log('Error encoding:', encoding);
+//   }
+// });
+
+const device = findByIds(1155, 22336);
