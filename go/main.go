@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/hennedo/escpos"
@@ -10,16 +9,17 @@ import (
 )
 
 func main() {
-	ports, err := serial.GetPortsList()
+	mode := &serial.Mode{
+		BaudRate: 115200,
+	}
+	port, err := serial.Open("/dev/bus/usb/001/002", mode)
+
 	if err != nil {
-		log.Fatal(err)
+		fmt.Print("Error opening serial port: ", err)
+		return
 	}
-	if len(ports) == 0 {
-		log.Fatal("No serial ports found!")
-	}
-	for _, port := range ports {
-		fmt.Printf("Found port: %v\n", port)
-	}
+
+	fmt.Print(port, err)
 
 	// Open the USB device file
 	deviceFile := "/dev/bus/usb/001/002" // Replace with the correct device path
