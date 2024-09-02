@@ -1,13 +1,14 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"log"
 	"os"
 	"os/exec"
 
 	"github.com/google/gousb"
-	"github.com/hennedo/escpos"
+	"github.com/seer-robotics/escpos"
 )
 
 func main() {
@@ -52,18 +53,42 @@ func main() {
 		log.Fatalf("Error finding OUT endpoint: %v", err)
 	}
 
-	p := escpos.New(epOut)
+	w := bufio.NewWriter(epOut)
+	p := escpos.New(w)
 
-	p.Bold(true).Size(1, 1).Write("Hello World")
-	p.Bold(false).Underline(2).Justify(escpos.JustifyCenter).Write("this is underlined")
+	p.Verbose = true
 
-	// ESC/POS command to write empty line
-	p.Write("\n")
-	p.Write("\n")
-	p.Write("\n")
+	p.Init()
+	p.SetFontSize(2, 3)
+	p.SetFont("A")
+	p.Write("test1")
+	p.SetFont("B")
+	p.Write("test2")
 
-	// You need to use either p.Print() or p.PrintAndCut() at the end to send the data to the printer.
-	p.Print()
+	p.SetEmphasize(1)
+	p.Write("hello")
+	p.Formfeed()
+
+	p.SetUnderline(1)
+	p.SetFontSize(4, 4)
+	p.Write("hello")
+
+	p.SetReverse(1)
+	p.SetFontSize(2, 4)
+	p.Write("hello")
+	p.FormfeedN(10)
+
+	p.SetAlign("center")
+	p.Write("test")
+	p.Linefeed()
+	p.Write("test")
+	p.Linefeed()
+	p.Write("test")
+	p.FormfeedD(200)
+
+	p.Cut()
+
+	w.Flush()
 
 	fmt.Println("Print job sent successfully!")
 }
