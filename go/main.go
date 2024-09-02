@@ -1,48 +1,62 @@
 package main
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/google/gousb"
-	"github.com/hennedo/escpos"
 )
 
 func main() {
+	// Create a new USB context
 	ctx := gousb.NewContext()
-
 	defer ctx.Close()
 
-	dev, err := ctx.OpenDeviceWithVIDPID(0x0483, 0x070b) // 0x0483:0x070b is the VID:PID of the printer
+	// Get a list of all USB devices
+	devices, err := ctx.OpenDevices(func(desc *gousb.DeviceDesc) bool {
+		// This function is called for each device.
+		// Returning true means the device should be opened.
+		return true
+	})
 
 	if err != nil {
-		log.Fatalf("Could not open a device: %v", err)
-	}
-	defer dev.Close()
-
-	// Claim the default interface using a convenience function.
-	// The default interface is always #0 alt #0 in the currently active
-	// config.
-	intf, done, err := dev.DefaultInterface()
-	if err != nil {
-		log.Fatalf("%s.DefaultInterface(): %v", dev, err)
-	}
-	defer done()
-
-	// Open an OUT endpoint.
-	ep, err := intf.OutEndpoint(7)
-	if err != nil {
-		log.Fatalf("%s.OutEndpoint(7): %v", intf, err)
+		log.Fatalf("Error opening devices: %v", err)
 	}
 
-	// Create a new printer
-	p := escpos.New(ep)
+	// Ensure all devices are closed when we're done
+	defer func() {
+		for _, d := range devices {
+			d.Close()
+		}
+	}()
 
-	p.Bold(true).Size(2, 2).Write("Hello World")
-	p.LineFeed()
-	p.Bold(false).Underline(2).Justify(escpos.JustifyCenter).Write("this is underlined")
-	p.LineFeed()
-	p.QRCode("https://github.com/hennedo/escpos", true, 10, escpos.QRCodeErrorCorrectionLevelH)
+	// Print information about each device
+	for i, dev := range devices {
+		fmt.Printf("Device %d:\n", i)
+		fmt.Printf("  Bus: %d\n", dev.Desc.Bus)
+		fmt.Printf("  Address: %d\n", dev.Desc.Address)
+		fmt.Printf("  Speed: %s\n", dev.Desc.Speed)
+		fmt.Printf("  Vendor ID: %s\n", dev.Desc.Vendor)
+		fmt.Printf("  Product ID: %s\n", dev.Desc.Product)
 
-	// You need to use either p.Print() or p.PrintAndCut() at the end to send the data to the printer.
-	p.Print()
+		// Get the device configuration
+		cfg, err := dev.Config(1)
+		if err != nil {
+			log.Printf("Error getting config: %v", err)
+			continue
+		}
+
+		// Print information about each interface
+		for _, intf := range cfg.Desc.Interfaces {
+			for _, ifSetting := range intf.AltSettings {
+				fmt.Printf("    Interface %d:\n", ifSetting.Number)
+				fmt.Printf("      Alt Setting: %d\n", ifSetting.Alternate)
+				fmt.Printf("      Class: %d\n", ifSetting.Class)
+				fmt.Printf("      SubClass: %d\n", ifSetting.SubClass)
+				fmt.Printf("      Protocol: %d\n", ifSetting.Protocol)
+			}
+		}
+
+		fmt.Println()
+	}
 }
