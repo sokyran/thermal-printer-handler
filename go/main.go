@@ -57,6 +57,11 @@ func main() {
 	p.Bold(true).Size(1, 1).Write("Hello World")
 	p.Bold(false).Underline(2).Justify(escpos.JustifyCenter).Write("this is underlined")
 
+	// ESC/POS command to write empty line
+	p.Write("\n")
+	p.Write("\n")
+	p.Write("\n")
+
 	// You need to use either p.Print() or p.PrintAndCut() at the end to send the data to the printer.
 	p.Print()
 
