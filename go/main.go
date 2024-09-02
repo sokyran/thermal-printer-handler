@@ -7,15 +7,7 @@ import (
 	"os/exec"
 
 	"github.com/google/gousb"
-)
-
-// ESC/POS commands
-var (
-	ESC  = []byte{0x1B}
-	GS   = []byte{0x1D}
-	INIT = []byte{0x1B, 0x40}       // Initialize printer
-	CUT  = []byte{0x1D, 0x56, 0x41} // Cut paper
-	LF   = []byte{0x0A}             // Line feed
+	"github.com/hennedo/escpos"
 )
 
 func main() {
@@ -60,30 +52,16 @@ func main() {
 		log.Fatalf("Error finding OUT endpoint: %v", err)
 	}
 
-	// Send initialization command
-	_, err = epOut.Write(INIT)
-	if err != nil {
-		log.Fatalf("Error initializing printer: %v", err)
-	}
+	p := escpos.New(epOut)
 
-	// Print some text
-	text := []byte("Hello, Thermal Printer!\n")
-	_, err = epOut.Write(text)
-	if err != nil {
-		log.Fatalf("Error writing text: %v", err)
-	}
+	p.Bold(true).Size(2, 2).Write("Hello World")
+	p.LineFeed()
+	p.Bold(false).Underline(2).Justify(escpos.JustifyCenter).Write("this is underlined")
+	p.LineFeed()
+	p.QRCode("https://github.com/hennedo/escpos", true, 10, escpos.QRCodeErrorCorrectionLevelH)
 
-	// Feed a line
-	_, err = epOut.Write(LF)
-	if err != nil {
-		log.Fatalf("Error feeding line: %v", err)
-	}
-
-	// Cut the paper
-	_, err = epOut.Write(CUT)
-	if err != nil {
-		log.Fatalf("Error cutting paper: %v", err)
-	}
+	// You need to use either p.Print() or p.PrintAndCut() at the end to send the data to the printer.
+	p.Print()
 
 	fmt.Println("Print job sent successfully!")
 }
