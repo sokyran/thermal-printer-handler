@@ -12,10 +12,17 @@ import (
 	"github.com/seer-robotics/escpos"
 )
 
-func WriteToPrinter(e *escpos.Escpos, data string) (int, error) {
-	cd, err := iconv.Open("pt151", "utf-8")
+var encodings = []string{
+	"PC437", "Katakana", "PC850", "PC860", "PC863", "PC865", "CP1252",
+	"ISO-8859-1", "ISO-8859-7", "ISO-8859-8", "ISO-8859-2", "Windows-1256",
+	"Windows-1252", "PC866", "PC852", "PC858", "Windows-1256", "ISO-8859-13",
+	"Windows-1256", "PT151",
+}
+
+func WriteToPrinter(e *escpos.Escpos, data string, encoding string) (int, error) {
+	cd, err := iconv.Open(encoding, "utf-8")
 	if err != nil {
-		log.Fatal(err)
+		return 0, fmt.Errorf("error opening iconv: %v", err)
 	}
 	defer cd.Close()
 	weu := cd.ConvString(data)
@@ -23,34 +30,26 @@ func WriteToPrinter(e *escpos.Escpos, data string) (int, error) {
 }
 
 func main() {
-	// Create a new USB context
 	ctx := gousb.NewContext()
 	defer ctx.Close()
 
-	// Find the specific device
 	dev, err := ctx.OpenDeviceWithVIDPID(0x0483, 0x070b)
 	if err != nil {
 		log.Fatalf("Could not open device: %v", err)
 	}
 	defer dev.Close()
 
-	// Attempt to detach the kernel driver
 	if err := dev.SetAutoDetach(true); err != nil {
 		log.Printf("Warning: Failed to set auto detach: %v", err)
 	}
 
-	// Claim the default interface (usually interface 0)
 	intf, done, err := dev.DefaultInterface()
 	if err != nil {
 		log.Printf("Error claiming interface: %v", err)
 		log.Println("Attempting to unbind kernel driver...")
-
-		// Attempt to unbind the kernel driver
 		if err := unbindKernelDriver(dev.Desc.Bus, dev.Desc.Address); err != nil {
 			log.Fatalf("Failed to unbind kernel driver: %v", err)
 		}
-
-		// Try claiming the interface again
 		intf, done, err = dev.DefaultInterface()
 		if err != nil {
 			log.Fatalf("Still unable to claim interface after unbinding: %v", err)
@@ -58,8 +57,7 @@ func main() {
 	}
 	defer done()
 
-	// Find the OUT endpoint
-	epOut, err := intf.OutEndpoint(0x01) // Assuming the first OUT endpoint
+	epOut, err := intf.OutEndpoint(0x01)
 	if err != nil {
 		log.Fatalf("Error finding OUT endpoint: %v", err)
 	}
@@ -68,27 +66,21 @@ func main() {
 	p := escpos.New(w)
 
 	p.Init()
-
 	p.SetFontSize(1, 1)
 	p.SetAlign("center")
 	p.SetFont("A")
-	p.Write("test1")
-	p.Linefeed()
 
-	WriteToPrinter(p, "test2")
+	for _, encoding := range encodings {
+		p.WriteRaw([]byte(fmt.Sprintf("Encoding: %s\n", encoding)))
+		_, err := WriteToPrinter(p, "Привіт", encoding)
+		if err != nil {
+			p.WriteRaw([]byte(fmt.Sprintf("Error: %v\n", err)))
+		}
+		p.Linefeed()
+		p.Linefeed()
+	}
 
-	p.Linefeed()
-	p.FormfeedN(10)
-
-	WriteToPrinter(p, "ПРИВІТ")
-
-	p.Linefeed()
-	p.FormfeedN(100)
-
-	p.Linefeed()
-	p.Linefeed()
-	p.Linefeed()
-
+	p.FormfeedN(5)
 	p.Cut()
 
 	w.Flush()
@@ -97,8 +89,6 @@ func main() {
 }
 
 func unbindKernelDriver(bus, address int) error {
-	// This function attempts to unbind the kernel driver
-	// Note: This requires root privileges and may not work on all systems
 	cmd := exec.Command("sh", "-c", fmt.Sprintf("echo -n '%d-%d' > /sys/bus/usb/drivers/usb/unbind", bus, address))
 	cmd.Stderr = os.Stderr
 	return cmd.Run()
