@@ -58,33 +58,11 @@ func main() {
 
 	p.Init()
 
-	p.SetFontSize(2, 3)
+	p.SetFontSize(1, 1)
 	p.SetFont("A")
 	p.Write("test1")
-	p.SetFont("B")
-
+	p.Linefeed()
 	p.WriteWEU("Привіт")
-
-	p.SetEmphasize(1)
-	p.Write("hello")
-	p.Formfeed()
-
-	p.SetUnderline(1)
-	p.SetFontSize(4, 4)
-	p.Write("hello")
-
-	p.SetReverse(1)
-	p.SetFontSize(2, 4)
-	p.Write("hello")
-	p.FormfeedN(10)
-
-	p.SetAlign("center")
-	p.Write("test")
-	p.Linefeed()
-	p.Write("test")
-	p.Linefeed()
-	p.Write("test")
-	p.FormfeedD(200)
 
 	p.Linefeed()
 	p.Linefeed()
