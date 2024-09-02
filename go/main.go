@@ -56,14 +56,13 @@ func main() {
 	w := bufio.NewWriter(epOut)
 	p := escpos.New(w)
 
-	p.Verbose = true
-
 	p.Init()
+
 	p.SetFontSize(2, 3)
 	p.SetFont("A")
 	p.Write("test1")
 	p.SetFont("B")
-	p.Write("test2")
+	p.Write("Привіт")
 
 	p.SetEmphasize(1)
 	p.Write("hello")
@@ -85,6 +84,10 @@ func main() {
 	p.Linefeed()
 	p.Write("test")
 	p.FormfeedD(200)
+
+	p.Linefeed()
+	p.Linefeed()
+	p.Linefeed()
 
 	p.Cut()
 
