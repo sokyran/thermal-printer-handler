@@ -58,18 +58,6 @@ const encoder = new EscPosEncoder({
 });
 
 const text = 'інтернаціоналізація';
-for (const encoding of encodings) {
-  try {
-    const result = encoder
-      .codepage(encoding)
-      .text(text)
-      .encode();
-
-    console.log(result);
-  } catch {
-    console.log('Error encoding:', encoding);
-  }
-}
 
 const result = encoder.initialize()
 
@@ -78,6 +66,8 @@ for (const encoding of encodings) {
     result
       .codepage(encoding)
       .text(text)
+
+    console.log('Encoding:', encoding);
   } catch {
     console.log('Error encoding:', encoding);
   }
