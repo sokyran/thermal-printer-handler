@@ -58,8 +58,10 @@ const encoder = new EscPosEncoder({
 });
 const result = encoder
   .initialize()
-  .text('Hello World')
+  .text('Hello World\n')
+  .text('Hello World\n')
   .newline()
+  .text('Hello World\n')
   .encode();
 
 // Step 4: Send the Data to the Printer
