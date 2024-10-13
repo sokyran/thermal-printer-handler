@@ -1,6 +1,7 @@
 import { findByIds } from 'usb';
 import { createCanvas, loadImage } from 'canvas'
 import ReceiptPrinterEncoder from '@point-of-sale/receipt-printer-encoder';
+import getPixels from 'get-pixels';
 
 let image = await loadImage('./image-true.png');
 
@@ -33,16 +34,27 @@ if (!endpoint || !endpoint.direction === 'out') {
 }
 
 let encoder = new ReceiptPrinterEncoder({
-  width: 35,
-  createCanvas
+  width: 34,
+  // createCanvas
 });
 
-const result = encoder
+// const result = encoder
+//   .initialize()
+//   .text('The quick brown fox jumps over the lazy dog')
+//   .newline()
+//   .image(image, 64, 64, 'image')
+//   .encode()
+
+let pixels = await new Promise(resolve => {
+  getPixels('./image-true.png', (err, pixels) => {
+    resolve(pixels);
+  });
+});
+
+let result = encoder
   .initialize()
-  .text('The quick brown fox jumps over the lazy dog')
-  .newline()
-  .image(image, 64, 64, 'image')
-  .encode()
+  .image(pixels, 64, 64, 'atkinson')
+  .encode();
 
 // Step 4: Send the Data to the Printer
 endpoint.transfer(result, (error) => {
