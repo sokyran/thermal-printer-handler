@@ -1,8 +1,12 @@
 const escpos = require("escpos");
 // install escpos-usb adapter module manually
-escpos.USB = require("escpos-usb");
+const { findByIds } = require("usb");
 // Select the adapter based on your printer type
-const device = new escpos.USB();
+// Step 1: Find the Printer
+const printerVendorId = 1155; // Replace with your printer's vendor ID
+const printerProductId = 1803; // Replace with your printer's product ID
+
+const device = findByIds(printerVendorId, printerProductId);
 
 const options = { encoding: "windows-1251" };
 
