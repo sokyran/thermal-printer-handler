@@ -43,54 +43,43 @@ let result = encoder.initialize();
 // Directory where the images are located
 const imagesDir = './images/';
 
-let imagesPaths = []
+const files = fs.readdirSync(imagesDir);
 
-fs.readdir(imagesDir, async (err, files) => {
-  if (err) {
-    console.error('Error reading directory:', err);
-    return;
-  };
+const imagesPaths = files.map(file => path.join(imagesDir, file));
 
-  // Map to get full paths
-  imagesPaths = files.map(file => path.join(imagesDir, file));
+for (let imagePath of imagesPaths) {
+  const dimensions = sizeOf(imagePath);
 
-  for (let imagePath of imagesPaths) {
-    const dimensions = sizeOf(imagePath);
+  const aspectRatio = dimensions.width / dimensions.height;
+  const newHeight = 400 / aspectRatio;
+  const roundedHeight = Math.round(newHeight / 8) * 8;
 
-    const aspectRatio = dimensions.width / dimensions.height;
-    const newHeight = 400 / aspectRatio;
-    const roundedHeight = Math.round(newHeight / 8) * 8;
-
-    let pixels = await new Promise(resolve => {
-      getPixels(imagePath, (err, pixels) => {
-        resolve(pixels);
-      });
-    });
-
-    result
-      .text('')
-      .newline()
-      .image(pixels, 400, roundedHeight, 'atkinson')
-      .newline()
-      .text('')
-
-  }
-
-  const final = result.cut().encode();
-
-  // Step 4: Send the Data to the Printer
-  endpoint.transfer(final, (error) => {
-    if (error) {
-      console.error('Failed to print:', error);
-    } else {
-      console.log('Printed successfully');
-    }
-
-    // Step 5: Release the Interface and Close the Device
-    intr.release(true, () => {
-      device.close();
+  let pixels = await new Promise(resolve => {
+    getPixels(imagePath, (err, pixels) => {
+      resolve(pixels);
     });
   });
 
-});
+  result
+    .text('')
+    .newline()
+    .image(pixels, 400, roundedHeight, 'atkinson')
+    .newline()
+    .text('')
+}
 
+const final = result.cut().encode();
+
+// Step 4: Send the Data to the Printer
+endpoint.transfer(final, (error) => {
+  if (error) {
+    console.error('Failed to print:', error);
+  } else {
+    console.log('Printed successfully');
+  }
+
+  // Step 5: Release the Interface and Close the Device
+  intr.release(true, () => {
+    device.close();
+  });
+});
