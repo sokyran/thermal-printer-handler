@@ -33,9 +33,11 @@ if (!endpoint || !endpoint.direction === 'out') {
   process.exit(1);
 }
 
-let encoder = new ReceiptPrinterEncoder({
+const encoder = new ReceiptPrinterEncoder({
   width: 32,
 });
+
+let result = encoder.initialize();
 
 
 // Directory where the images are located
@@ -43,9 +45,7 @@ const imagesDir = './images/';
 
 let imagesPaths = []
 
-fs.readdirSync(imagesDir, (err, files) => {
-  console.log(imagesDir)
-
+fs.readdir(imagesDir, async (err, files) => {
   if (err) {
     console.error('Error reading directory:', err);
     return;
@@ -53,44 +53,44 @@ fs.readdirSync(imagesDir, (err, files) => {
 
   // Map to get full paths
   imagesPaths = files.map(file => path.join(imagesDir, file));
-});
 
-let result = encoder.initialize();
+  for (let imagePath of imagesPaths) {
+    const dimensions = sizeOf(imagePath);
 
-for (let imagePath of imagesPaths) {
-  const dimensions = sizeOf(imagePath);
+    const aspectRatio = dimensions.width / dimensions.height;
+    const newHeight = 400 / aspectRatio;
+    const roundedHeight = Math.round(newHeight / 8) * 8;
 
-  const aspectRatio = dimensions.width / dimensions.height;
-  const newHeight = 400 / aspectRatio;
-  const roundedHeight = Math.round(newHeight / 8) * 8;
+    let pixels = await new Promise(resolve => {
+      getPixels(imagePath, (err, pixels) => {
+        resolve(pixels);
+      });
+    });
 
-  let pixels = await new Promise(resolve => {
-    getPixels(imagePath, (err, pixels) => {
-      resolve(pixels);
+    result
+      .text('')
+      .newline()
+      .image(pixels, 400, roundedHeight, 'atkinson')
+      .newline()
+      .text('')
+
+  }
+
+  const final = result.cut().encode();
+
+  // Step 4: Send the Data to the Printer
+  endpoint.transfer(final, (error) => {
+    if (error) {
+      console.error('Failed to print:', error);
+    } else {
+      console.log('Printed successfully');
+    }
+
+    // Step 5: Release the Interface and Close the Device
+    intr.release(true, () => {
+      device.close();
     });
   });
 
-  result
-    .text('')
-    .newline()
-    .image(pixels, 400, roundedHeight, 'atkinson')
-    .newline()
-    .text('')
-
-}
-
-const final = result.cut().encode();
-
-// Step 4: Send the Data to the Printer
-endpoint.transfer(final, (error) => {
-  if (error) {
-    console.error('Failed to print:', error);
-  } else {
-    console.log('Printed successfully');
-  }
-
-  // Step 5: Release the Interface and Close the Device
-  intr.release(true, () => {
-    device.close();
-  });
 });
+
