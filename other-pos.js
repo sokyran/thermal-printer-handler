@@ -34,7 +34,7 @@ let encoder = new ReceiptPrinterEncoder({
   width: 32,
 });
 
-const imagePath = './image.jpeg';
+const imagePath = './svyato.png';
 
 let pixels = await new Promise(resolve => {
   getPixels(imagePath, (err, pixels) => {
