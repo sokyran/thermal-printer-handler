@@ -44,7 +44,7 @@ const imagesDir = './images/';
 let imagesPaths = []
 
 
-fs.readFileSync(imagesDir, (err, files) => {
+fs.readdirSync(imagesDir, (err, files) => {
   if (err) {
     console.error('Error reading directory:', err);
     return;
