@@ -2,7 +2,7 @@ import { findByIds } from 'usb';
 import { createCanvas, loadImage } from 'canvas'
 import ReceiptPrinterEncoder from '@point-of-sale/receipt-printer-encoder';
 
-let image = await loadImage('./image.jpg');
+let image = await loadImage('./image-true.png');
 
 // Step 1: Find the Printer
 const printerVendorId = 1155; // Replace with your printer's vendor ID
