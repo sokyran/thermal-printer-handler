@@ -1,8 +1,7 @@
 import escpos from "escpos";
 import USB from "escpos-usb";
 
-escpos.USB = USB;
-const device = new escpos.USB();
+const device = new USB();
 
 const options = { encoding: "windows-1251" };
 
