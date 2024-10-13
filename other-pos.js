@@ -40,20 +40,22 @@ let encoder = new ReceiptPrinterEncoder({
 
 // Directory where the images are located
 const imagesDir = './images/';
-const imagePaths = fs.readdir(imagesDir, (err, files) => {
+
+let imagesPaths = []
+
+fs.readdir(imagesDir, (err, files) => {
   if (err) {
     console.error('Error reading directory:', err);
     return;
   };
 
   // Map to get full paths
-  return files.map(file => path.join(imagesDir, file));
+  imagesPaths = files.map(file => path.join(imagesDir, file));
 });
-
 
 let result = encoder.initialize();
 
-for (let imagePath of imagePaths) {
+for (let imagePath of imagesPaths) {
   const dimensions = sizeOf(imagePath);
 
   const aspectRatio = dimensions.width / dimensions.height;
