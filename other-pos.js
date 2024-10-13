@@ -44,9 +44,6 @@ const encoder = new EscPosEncoder({
   width: 34,
 });
 
-let image = new Image()
-image.src = './image.jpg'
-
 const result = encoder
   .initialize()
   .image(ctx, 40, 40).encode()
