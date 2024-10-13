@@ -1,6 +1,16 @@
 import EscPosEncoder from 'esc-pos-encoder';
 import { findByIds } from 'usb';
 
+import { createCanvas, loadImage } from 'canvas'
+
+const canvas = createCanvas(200, 200)
+const ctx = canvas.getContext('2d')
+
+// Draw cat with lime helmet
+loadImage('./image.jpg').then((image) => {
+  ctx.drawImage(image, 50, 0, 70, 70)
+})
+
 // Step 1: Find the Printer
 const printerVendorId = 1155; // Replace with your printer's vendor ID
 const printerProductId = 1803; // Replace with your printer's product ID
@@ -39,7 +49,7 @@ image.src = './image.jpg'
 
 const result = encoder
   .initialize()
-  .image(image, 40, 40).encode()
+  .image(ctx, 40, 40).encode()
 
 // Step 4: Send the Data to the Printer
 endpoint.transfer(result, (error) => {
