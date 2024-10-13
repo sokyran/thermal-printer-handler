@@ -42,7 +42,7 @@ const dimensions = sizeOf(imagePath);
 
 const aspectRatio = dimensions.width / dimensions.height;
 const newHeight = 400 / aspectRatio;
-roundedHeight = Math.round(newHeight / 8) * 8;
+const roundedHeight = Math.round(newHeight / 8) * 8;
 
 let pixels = await new Promise(resolve => {
   getPixels(imagePath, (err, pixels) => {
