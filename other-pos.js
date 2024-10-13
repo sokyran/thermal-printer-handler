@@ -36,7 +36,7 @@ const encoder = new EscPosEncoder({
 
 const result = encoder
   .initialize()
-  .image('./image.jpg', 34).encode()
+  .image('./image.jpg', 40).encode()
 
 // Step 4: Send the Data to the Printer
 endpoint.transfer(result, (error) => {
