@@ -46,7 +46,7 @@ const encoder = new EscPosEncoder({
 
 const result = encoder
   .initialize()
-  .image(ctx, 40, 40).encode()
+  .image(canvas, 40, 40).encode()
 
 // Step 4: Send the Data to the Printer
 endpoint.transfer(result, (error) => {
