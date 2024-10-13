@@ -1,15 +1,8 @@
-import EscPosEncoder from 'esc-pos-encoder';
 import { findByIds } from 'usb';
-
 import { createCanvas, loadImage } from 'canvas'
+import ReceiptPrinterEncoder from '@point-of-sale/receipt-printer-encoder';
 
-const canvas = createCanvas(200, 200)
-const ctx = canvas.getContext('2d')
-
-// Draw cat with lime helmet
-loadImage('./image.jpg').then((image) => {
-  ctx.drawImage(image, 0, 0, 200, 200)
-})
+let image = await loadImage('./image.jpg');
 
 // Step 1: Find the Printer
 const printerVendorId = 1155; // Replace with your printer's vendor ID
@@ -39,14 +32,14 @@ if (!endpoint || !endpoint.direction === 'out') {
   process.exit(1);
 }
 
-// Step 3: Create and Encode the Print Command
-const encoder = new EscPosEncoder({
-  width: 34,
+let encoder = new ReceiptPrinterEncoder({
+  createCanvas
 });
 
 const result = encoder
   .initialize()
-  .image(canvas, 40, 40).encode()
+  .image(image, 64, 64, 'image')
+  .encode()
 
 // Step 4: Send the Data to the Printer
 endpoint.transfer(result, (error) => {
