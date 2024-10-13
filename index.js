@@ -1,7 +1,8 @@
-import escpos from "escpos";
-import USB from "escpos-usb";
-
-const device = new USB();
+const escpos = require("escpos");
+// install escpos-usb adapter module manually
+escpos.USB = require("escpos-usb");
+// Select the adapter based on your printer type
+const device = new escpos.USB();
 
 const options = { encoding: "windows-1251" };
 
