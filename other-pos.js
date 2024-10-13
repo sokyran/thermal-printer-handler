@@ -33,6 +33,7 @@ if (!endpoint || !endpoint.direction === 'out') {
 }
 
 let encoder = new ReceiptPrinterEncoder({
+  width: 35,
   createCanvas
 });
 
