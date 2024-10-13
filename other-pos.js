@@ -42,6 +42,7 @@ const dimensions = sizeOf(imagePath);
 
 const aspectRatio = dimensions.width / dimensions.height;
 const newHeight = 400 / aspectRatio;
+roundedHeight = Math.round(newHeight / 8) * 8;
 
 let pixels = await new Promise(resolve => {
   getPixels(imagePath, (err, pixels) => {
@@ -53,10 +54,7 @@ let result = encoder
   .initialize()
   .text('')
   .newline()
-  .image(pixels, 400, newHeight, 'atkinson')
-  .newline()
-  .newline()
-  .newline()
+  .image(pixels, 400, roundedHeight, 'atkinson')
   .newline()
   .newline()
   .text('')
