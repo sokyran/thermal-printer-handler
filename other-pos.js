@@ -38,6 +38,8 @@ let encoder = new ReceiptPrinterEncoder({
 
 const result = encoder
   .initialize()
+  .text('The quick brown fox jumps over the lazy dog')
+  .newline()
   .image(image, 64, 64, 'image')
   .encode()
 
