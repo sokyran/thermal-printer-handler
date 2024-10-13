@@ -2,7 +2,8 @@ import { findByIds } from 'usb';
 import ReceiptPrinterEncoder from '@point-of-sale/receipt-printer-encoder';
 import getPixels from 'get-pixels';
 import sizeOf from 'image-size';
-
+import fs from 'fs';
+import path from 'path';
 
 // Step 1: Find the Printer
 const printerVendorId = 1155; // Replace with your printer's vendor ID
@@ -36,44 +37,48 @@ let encoder = new ReceiptPrinterEncoder({
   width: 32,
 });
 
-const imagePath = './svyato.png';
 
-const dimensions = sizeOf(imagePath);
+// Directory where the images are located
+const imagesDir = './images/';
+const imagePaths = fs.readdir(imagesDir, (err, files) => {
+  if (err) {
+    console.error('Error reading directory:', err);
+    return;
+  };
 
-const aspectRatio = dimensions.width / dimensions.height;
-const newHeight = 400 / aspectRatio;
-const roundedHeight = Math.round(newHeight / 8) * 8;
-
-let pixels = await new Promise(resolve => {
-  getPixels(imagePath, (err, pixels) => {
-    resolve(pixels);
-  });
+  // Map to get full paths
+  return files.map(file => path.join(imagesDir, file));
 });
 
-let result = encoder
-  .initialize()
-  .text('')
-  .newline()
-  .image(pixels, 400, roundedHeight, 'atkinson')
-  .newline()
-  .newline()
-  .text('')
-  .image(pixels, 400, roundedHeight, 'floydsteinberg')
-  .newline()
-  .newline()
-  .text('')
-  .image(pixels, 400, roundedHeight, 'bayer')
-  .newline()
-  .newline()
-  .text('')
-  .image(pixels, 400, roundedHeight, 'threshold')
-  .newline()
-  .newline()
-  .cut()
-  .encode();
+
+let result = encoder.initialize();
+
+for (let imagePath of imagePaths) {
+  const dimensions = sizeOf(imagePath);
+
+  const aspectRatio = dimensions.width / dimensions.height;
+  const newHeight = 400 / aspectRatio;
+  const roundedHeight = Math.round(newHeight / 8) * 8;
+
+  let pixels = await new Promise(resolve => {
+    getPixels(imagePath, (err, pixels) => {
+      resolve(pixels);
+    });
+  });
+
+  result
+    .text('')
+    .newline()
+    .image(pixels, 400, roundedHeight, 'atkinson')
+    .newline()
+    .text('')
+
+}
+
+const final = result.cut().encode();
 
 // Step 4: Send the Data to the Printer
-endpoint.transfer(result, (error) => {
+endpoint.transfer(final, (error) => {
   if (error) {
     console.error('Failed to print:', error);
   } else {
