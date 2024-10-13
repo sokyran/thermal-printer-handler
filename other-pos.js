@@ -1,6 +1,8 @@
 import { findByIds } from 'usb';
 import ReceiptPrinterEncoder from '@point-of-sale/receipt-printer-encoder';
 import getPixels from 'get-pixels';
+import sizeOf from 'image-size';
+
 
 // Step 1: Find the Printer
 const printerVendorId = 1155; // Replace with your printer's vendor ID
@@ -36,6 +38,11 @@ let encoder = new ReceiptPrinterEncoder({
 
 const imagePath = './svyato.png';
 
+const dimensions = sizeOf(imagePath);
+
+const aspectRatio = dimensions.width / dimensions.height;
+const newHeight = 400 / aspectRatio;
+
 let pixels = await new Promise(resolve => {
   getPixels(imagePath, (err, pixels) => {
     resolve(pixels);
@@ -46,7 +53,7 @@ let result = encoder
   .initialize()
   .text('')
   .newline()
-  .image(pixels, 400, 400, 'atkinson')
+  .image(pixels, 400, newHeight, 'atkinson')
   .newline()
   .newline()
   .newline()
