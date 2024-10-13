@@ -8,9 +8,7 @@ const ctx = canvas.getContext('2d')
 
 // Draw cat with lime helmet
 loadImage('./image.jpg').then((image) => {
-  ctx.drawImage(image, 50, 0, 70, 70)
-
-  console.log('<img src="' + canvas.toDataURL() + '" />')
+  ctx.drawImage(image, 0, 0, 200, 200)
 })
 
 // Step 1: Find the Printer
@@ -48,7 +46,7 @@ const encoder = new EscPosEncoder({
 
 const result = encoder
   .initialize()
-  .image(canvas, 400, 400).encode()
+  .image(canvas, 40, 40).encode()
 
 // Step 4: Send the Data to the Printer
 endpoint.transfer(result, (error) => {
