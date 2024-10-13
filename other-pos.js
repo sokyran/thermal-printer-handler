@@ -34,7 +34,7 @@ let encoder = new ReceiptPrinterEncoder({
   width: 32,
 });
 
-const imagePath = './image-true.png';
+const imagePath = './image.jpg';
 
 let pixels = await new Promise(resolve => {
   getPixels(imagePath, (err, pixels) => {
@@ -47,6 +47,8 @@ let result = encoder
   .text('The quick brown fox jumps over the lazy dog')
   .newline()
   .image(pixels, 400, 400, 'atkinson')
+  .newline()
+  .newline()
   .encode();
 
 // Step 4: Send the Data to the Printer
