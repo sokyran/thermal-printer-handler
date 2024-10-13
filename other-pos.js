@@ -43,8 +43,9 @@ const imagesDir = './images/';
 
 let imagesPaths = []
 
-
 fs.readdirSync(imagesDir, (err, files) => {
+  console.log(imagesDir)
+
   if (err) {
     console.error('Error reading directory:', err);
     return;
