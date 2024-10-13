@@ -45,6 +45,8 @@ const imagesDir = './images/';
 
 const files = fs.readdirSync(imagesDir);
 
+console.log('Printing images:', files);
+
 const imagesPaths = files.map(file => path.join(imagesDir, file));
 
 for (let imagePath of imagesPaths) {
