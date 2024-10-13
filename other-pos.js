@@ -50,15 +50,21 @@ let pixels = await new Promise(resolve => {
   });
 });
 
+const modes = ['threshold', 'bayer', 'floydsteinberg', 'atkinson'];
+
 let result = encoder
   .initialize()
   .text('')
   .newline()
-  .image(pixels, 400, roundedHeight, 'atkinson')
-  .newline()
-  .newline()
-  .text('')
-  .encode();
+
+for (let mode of modes) {
+  result = result.image(pixels, 400, roundedHeight, mode)
+    .newline()
+    .newline()
+    .text('');
+}
+
+result.text('').encode();
 
 // Step 4: Send the Data to the Printer
 endpoint.transfer(result, (error) => {
