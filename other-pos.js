@@ -9,6 +9,8 @@ const ctx = canvas.getContext('2d')
 // Draw cat with lime helmet
 loadImage('./image.jpg').then((image) => {
   ctx.drawImage(image, 50, 0, 70, 70)
+
+  console.log('<img src="' + canvas.toDataURL() + '" />')
 })
 
 // Step 1: Find the Printer
