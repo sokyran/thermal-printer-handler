@@ -43,13 +43,15 @@ let result = encoder.initialize();
 // Directory where the images are located
 const imagesDir = './images/';
 
+const counter = 0;
+
 const files = fs.readdirSync(imagesDir);
 
 console.log('Printing images:', files);
 
 const imagesPaths = files.map(file => path.join(imagesDir, file));
 
-for (let imagePath of imagesPaths) {
+for (let imagePath of [imagesPaths[counter]]) {
   const dimensions = sizeOf(imagePath);
 
   const aspectRatio = dimensions.width / dimensions.height;
