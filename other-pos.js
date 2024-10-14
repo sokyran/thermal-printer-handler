@@ -43,7 +43,7 @@ let result = encoder.initialize();
 // Directory where the images are located
 const imagesDir = './images/';
 
-const counter = 0;
+const counter = 5;
 
 const files = fs.readdirSync(imagesDir);
 
@@ -65,8 +65,6 @@ for (let imagePath of [imagesPaths[counter]]) {
   });
 
   result
-    .text('')
-    .newline()
     .image(pixels, 400, roundedHeight, 'atkinson')
     .newline()
     .text('')
